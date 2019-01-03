@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+group = 'com.github.PeelTechnologies'
+version = '1.0.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+configurations.all {
+}
+
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+android {
+    compileSdkVersion 28
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'com.github.PeelTechnologies:android-typesafe-prefs:1.1.9'
+    implementation 'com.google.firebase:firebase-config:16.1.2'
+}
+
