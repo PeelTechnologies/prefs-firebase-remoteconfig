@@ -80,47 +80,49 @@ public class PrefsFirebaseRemoteConfig {
 
     @SuppressWarnings("unchecked")
     private <T> void sync(TypedKey<T> key) {
-        T instance;
-        Type type = key.getTypeOfValue();
-        String keyName = key.getName();
-        Set<String> keys = rc.getKeysByPrefix(keyName);
-        boolean found = keys.contains(keyName);
-        if (!found) return;
-        if (type == Boolean.class || type == boolean.class) {
-            boolean value = rc.getBoolean(keyName);
-            instance = (T) Boolean.valueOf(value);
-        } else if (type == String.class) {
-            String str = rc.getString(keyName);
-            str = stripJsonQuotesIfPresent(str);
-            instance = (T) str;
-        } else if (type == Integer.class || type == int.class) {
-            long value = rc.getLong(keyName);
-            instance = (T) Integer.valueOf((int) value);
-        } else if (type == Long.class || type == long.class) {
-            long value = rc.getLong(keyName);
-            instance = (T) Long.valueOf(value);
-        } else if (type == Float.class || type == float.class) {
-            double value = rc.getDouble(keyName);
-            instance = (T) Float.valueOf((float) value);
-        } else if (type == Double.class || type == double.class) {
-            double value = rc.getDouble(keyName);
-            instance = (T) Double.valueOf(value);
-        } else if (type == Short.class || type == short.class) {
-            long value = rc.getLong(keyName);
-            instance = (T) Short.valueOf((short) value);
-        } else if (type == Byte.class || type == byte.class) {
-            long value = rc.getLong(keyName);
-            instance = (T) Byte.valueOf((byte) value);
-        } else {
-            String json = rc.getString(keyName);
-            instance = gson.fromJson(json, type);
-        }
-        if (instance != null) {
-            T existing = SharedPrefs.get(key, null);
-            if (!equals(existing, instance)) {
-                SharedPrefs.put(key, instance);
+        try {
+            T instance;
+            Type type = key.getTypeOfValue();
+            String keyName = key.getName();
+            Set<String> keys = rc.getKeysByPrefix(keyName);
+            boolean found = keys.contains(keyName);
+            if (!found) return;
+            if (type == Boolean.class || type == boolean.class) {
+                boolean value = rc.getBoolean(keyName);
+                instance = (T) Boolean.valueOf(value);
+            } else if (type == String.class) {
+                String str = rc.getString(keyName);
+                str = stripJsonQuotesIfPresent(str);
+                instance = (T) str;
+            } else if (type == Integer.class || type == int.class) {
+                long value = rc.getLong(keyName);
+                instance = (T) Integer.valueOf((int) value);
+            } else if (type == Long.class || type == long.class) {
+                long value = rc.getLong(keyName);
+                instance = (T) Long.valueOf(value);
+            } else if (type == Float.class || type == float.class) {
+                double value = rc.getDouble(keyName);
+                instance = (T) Float.valueOf((float) value);
+            } else if (type == Double.class || type == double.class) {
+                double value = rc.getDouble(keyName);
+                instance = (T) Double.valueOf(value);
+            } else if (type == Short.class || type == short.class) {
+                long value = rc.getLong(keyName);
+                instance = (T) Short.valueOf((short) value);
+            } else if (type == Byte.class || type == byte.class) {
+                long value = rc.getLong(keyName);
+                instance = (T) Byte.valueOf((byte) value);
+            } else {
+                String json = rc.getString(keyName);
+                instance = gson.fromJson(json, type);
             }
-        }
+            if (instance != null) {
+                T existing = SharedPrefs.get(key, null);
+                if (!equals(existing, instance)) {
+                    SharedPrefs.put(key, instance);
+                }
+            }
+        } catch (Exception ignored) {} // Invalid values get ignored
     }
 
     private <T> boolean equals(T first, T second) {
